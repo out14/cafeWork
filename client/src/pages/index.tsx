@@ -18,6 +18,10 @@ export function HomePage() {
       navigate(`/cafeList?query=${searchState}`)
 
   }
+  const clickHash =(e:string)=>{
+    console.log(e,'hash')
+    navigate(`/cafeList?query=${e}`)
+  }
 
 
   return (
@@ -77,24 +81,31 @@ export function HomePage() {
                   onChange={(e)=>setSearchState(e.target.value)}
                 />
                 <button 
-                type="button" 
-                className="banner_content_search_btn"
-                
+                  type="button" 
+                  className="banner_content_search_btn"
                 >
                   카페 찾기
                 </button>
               </form>
               <div className="banner_content_tags">
-                <button type="button" className="banner_content_tag">
-                  콘센트 넉넉
+                <button
+                  onClick={()=>clickHash('홍대')} type="button" className="banner_content_tag"
+                >
+                  홍대
                 </button>
-                <button type="button" className="banner_content_tag">
+                <button 
+                  onClick={()=>clickHash('조용한 분위기')} type="button" className="banner_content_tag"
+                >
                   조용한 분위기
                 </button>
-                <button type="button" className="banner_content_tag">
+                <button 
+                  onClick={()=>clickHash('빠른 와이파이')} type="button" className="banner_content_tag"
+                  >
                   빠른 와이파이
                 </button>
-                <button type="button" className="banner_content_tag">
+                <button 
+                  onClick={()=>clickHash('늦게까지 영업')} type="button" className="banner_content_tag"
+                >
                   늦게까지 영업
                 </button>
               </div>

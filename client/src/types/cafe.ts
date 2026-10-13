@@ -5,4 +5,5 @@ export interface CafeData {
   phone: string
   x: string
   y: string
+  place_url:string
 }

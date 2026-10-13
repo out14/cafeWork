@@ -4,29 +4,42 @@ import type { CafeData } from "@/types/cafe"
 import { SearchBar } from "@/components/ui/searchBar"
 import { useState } from "react"
 import { useSearchParams } from "react-router-dom"
+import { List } from "@/components/layout/List"
+import { Modal } from "@/components/layout/Modal"
 
 
 export const CafeList =()=>{
+    const [ searchParams, setSearchParams ] = useSearchParams();
+    const query = searchParams.get('query') ?? '서울'
 
-    const [ searchParams ] = useSearchParams();
-    const query = searchParams.get('query')
-    
-    const [searchState , setSearchState]=useState<string|null>(query ?? '서울')
-    const [insertState, setInsertState] = useState<string|null>(searchState?searchState:query)
+    const [insertState, setInsertState] = useState<string>(query)
+    const [ modalState, setModalState ] = useState<any>('')
     const [ loading, error  ] = useKakaoLoader({
         appkey: import.meta.env.VITE_KAKAO_JS_KEY,
         libraries: ['services']
     })
+    // const { data, isPending } = useMapApi(query?query:searchState)
+    const { data, isPending } = useMapApi(query)
 
-    const { data, isPending } = useMapApi(query?query:searchState)
+
     const firstCafe = data?.documents[0]
 
     const btnState = (e:React.FormEvent<HTMLFormElement>)=>{
         console.log(insertState,"insertState")
         e.preventDefault()
-        setSearchState(insertState)
-        
+        setSearchParams({ query: insertState })
     }
+    const viewModal = (e:string)=>{
+        setModalState(e)
+    }
+    const closeModal = ()=>{
+        setModalState('')
+    }
+    const refreshSearch =()=>{
+        setSearchParams({})
+        setInsertState('서울') 
+    }
+
 
     if(error){
         console.log('카카오맵 로드 실패',error)
@@ -40,6 +53,17 @@ export const CafeList =()=>{
 
     return (
         <div className="kakaoMap">
+            {modalState&&
+                <Modal onClose={closeModal}>
+                    <iframe 
+                        title={data?.documents.find(e=>e.id===modalState)?.place_name}
+                        src={data?.documents.find(e=>e.id===modalState)?.place_url}
+                        width="100%"
+                        height="500"
+                        style={{ border: 0 }}
+                    />
+                </Modal> 
+            }
             {data && firstCafe && (
                 <Map
                     center={{ lat: Number(firstCafe.y), lng: Number(firstCafe.x) }}
@@ -55,13 +79,13 @@ export const CafeList =()=>{
                         ))}
 
                     <div className="kakaoMap_list">
-                        {data?.documents.map((cafe:CafeData) => (
-                            <div className="kakaoMap_list_item" key={cafe.id}>
-                                <h3>{cafe.place_name}</h3>
-                                <p>{cafe.road_address_name}</p>
-                                <p>{cafe.phone}</p>
-                            </div>
-                        ))}
+                        <List 
+                            data= {data?.documents}
+                            // state={modalState}
+                            onClick={viewModal}
+                            // setState={setModalState}
+                        />
+                        
                     </div>
 
                     <div className="kakaoMap_search">
@@ -74,6 +98,16 @@ export const CafeList =()=>{
                         
                     </div>
                 </Map>
+            )}
+            {data?.documents?.length===0&&(
+                <div className="nonResearch">
+                    검색어가 존재 하지 않습니다.    
+                    <button
+                        type="button" 
+                        onClick={()=>refreshSearch()}
+                        className="banner_content_search_btn"
+                    >재검색</button>
+                </div>
             )}
         </div>     
     )
