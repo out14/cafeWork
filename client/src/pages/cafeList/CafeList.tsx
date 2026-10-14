@@ -6,7 +6,39 @@ import { useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { List } from "@/components/layout/List"
 import { Modal } from "@/components/layout/Modal"
+import { saveBookMark } from "@/api/BookMarkApi"
 
+
+const ModalPop =({data}:{data:any|undefined})=>{
+
+    const AddBookMark =()=>{
+
+        
+        if(confirm('북마크에 추가 하시겠습니까?')){
+            const setLocal =saveBookMark({
+                    address_name: data.address_name,
+                    id: data.id,
+                    phone: data.phone,
+                    place_name: data.place_name,
+                    place_url: data.place_url
+
+            })
+            console.log('setLocal',setLocal)
+        }
+    }
+
+    return (
+        <div className="modal_footer">
+            <button 
+                type="button" 
+                className="bookmark_list_item_btn"
+                onClick={AddBookMark}
+            >
+                북마크 추가
+            </button>
+        </div>
+    )
+}
 
 export const CafeList =()=>{
     const [ searchParams, setSearchParams ] = useSearchParams();
@@ -54,7 +86,12 @@ export const CafeList =()=>{
     return (
         <div className="kakaoMap">
             {modalState&&
-                <Modal onClose={closeModal}>
+                <Modal 
+                    onClose={closeModal}
+                    footer={
+                        <ModalPop data={data?.documents.find(e=>e.id===modalState)}/>
+                    }
+                >
                     <iframe 
                         title={data?.documents.find(e=>e.id===modalState)?.place_name}
                         src={data?.documents.find(e=>e.id===modalState)?.place_url}

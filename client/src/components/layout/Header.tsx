@@ -25,6 +25,14 @@ export const Header = () => {
                 >
                   커뮤니티
                 </NavLink>
+                <NavLink
+                  to="/bookmark"
+                  className={({ isActive }) =>
+                    `[&.active]:text-primary${isActive ? ' active' : ''}`
+                  }
+                >
+                  북마크
+                </NavLink>
         </nav>
       </header>
 
