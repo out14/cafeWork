@@ -1,10 +1,12 @@
 import { callBookMark, delBookMark } from "@/api/BookMarkApi";
+import { Modal } from "@/components/layout/Modal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const BookMark = () => {
 
     const [localList, setLocalList] = useState(()=>callBookMark());
+    const [view,setView]=useState<null|undefined>(null)
     const navigate = useNavigate()
 
     const delBook =(id:string|undefined)=>{
@@ -14,8 +16,27 @@ export const BookMark = () => {
         }
     }
 
+    const viewDetail = (id:string|undefined)=>{
+        setView(id)
+
+    }
+
     return (
         <div className="bookmark">
+            {view&&(
+                <Modal
+                    onClose={()=>setView(null)}
+                    footer={null}
+                >
+                    <iframe 
+                        title={localList.find(e=>e.id===view)?.place_name}
+                        src={localList.find(e=>e.id===view)?.place_url}
+                        width="100%"
+                        height="500"
+                        style={{ border: 0 }}
+                    />
+                </Modal>
+            )}
             <div className="bookmark_inner">
                 <div className="bookmark_head">
                     <h2 className="bookmark_head_title">내가 찜한 카페</h2>
@@ -31,7 +52,11 @@ export const BookMark = () => {
                                 <p className="bookmark_list_item_phone">{e.phone}</p>
                             </div>
                             <div className="bookmark_list_item_btns">
-                                <button type="button" className="bookmark_list_item_btn">상세보기</button>
+                                <button 
+                                    type="button" 
+                                    className="bookmark_list_item_btn"
+                                    onClick={()=>viewDetail(e.id)}
+                                >상세보기</button>
                                 <button 
                                     type="button" 
                                     className="bookmark_list_item_btn bookmark_list_item_btn--delete"

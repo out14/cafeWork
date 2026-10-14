@@ -7,7 +7,7 @@ export  const Modal = ({
     onClose
 }:{
     children:ReactNode,
-    footer:React.JSX.Element,
+    footer:React.JSX.Element|null,
     // onClick:()=>void|undefined,
     onClose:()=>void
 }) => {
@@ -21,7 +21,7 @@ export  const Modal = ({
                     <button onClick={onClose} className="modal_btn">X</button>
                 </div>
                 {children}
-                {footer}
+                {footer&&footer}
             </div>
         </div>
     );
