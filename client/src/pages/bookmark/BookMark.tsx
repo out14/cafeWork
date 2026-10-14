@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 export const BookMark = () => {
 
     const [localList, setLocalList] = useState(()=>callBookMark());
-    const [view,setView]=useState<null|undefined>(null)
+    const [view,setView]=useState<string|undefined>(undefined)
     const navigate = useNavigate()
 
     const delBook =(id:string|undefined)=>{
@@ -25,7 +25,7 @@ export const BookMark = () => {
         <div className="bookmark">
             {view&&(
                 <Modal
-                    onClose={()=>setView(null)}
+                    onClose={()=>setView(undefined)}
                     footer={null}
                 >
                     <iframe 
